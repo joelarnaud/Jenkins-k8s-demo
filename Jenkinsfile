@@ -58,5 +58,45 @@ pipeline {
                 }
             }
         }
+        stage('Deploy to QA') {
+            environment {
+                ENVIRONMENT = 'qa'
+            }
+            steps {
+                echo "Deploying to ${ENVIRONMENT}"
+                kubernetesDeploy configs: '**/*.yaml', kubeConfig: [path: ''], kubeconfigId: 'k8s', secretName: '', ssh: [sshCredentialsId: '*', sshServer: ''], textCredentials: [certificateAuthorityData: '', clientCertificateData: '', clientKeyData: '', serverUrl: 'https://']
+            }
+        }
+        stage ('Approve Prod Deploy') {
+            when {
+                branch 'master'
+            }
+            options {
+                timeout(time: 1, unit: 'HOURS')
+            }
+            steps {
+                input message: "Deploy?"
+            }
+            post {
+                success {
+                    echo "Production Deploy Approuve"
+                }
+                aborted {
+                    echo "Production Deploy Denied"
+                }
+            }
+        }
+        stage('Deploy to PROD') {
+            when {
+                branch 'master'
+            }
+            environment {
+                ENVIRONMENT = 'prod'
+            }
+            steps {
+                echo "Deploying to ${ENVIRONMENT}"
+                kubernetesDeploy configs: '**/*.yaml', kubeConfig: [path: ''], kubeconfigId: 'k8s', secretName: '', ssh: [sshCredentialsId: '*', sshServer: ''], textCredentials: [certificateAuthorityData: '', clientCertificateData: '', clientKeyData: '', serverUrl: 'https://']
+            }
+        }
     }
 }
