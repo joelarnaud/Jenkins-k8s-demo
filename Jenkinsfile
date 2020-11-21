@@ -11,17 +11,9 @@ pipeline {
             steps{
                 sh label: '', script: '''docker image ls -a
 '''
-                sh label: '', script: '''cd azure-vote 
+                sh label: '', script: '''cd azure-vote; docker image ls -a; docker build -t jenkins-pipeline .; docker image ls -a; cd ..
 '''
-                sh label: '', script: '''docker image ls -a
-'''
-                sh label: '', script: '''docker build -t jenkins-pipeline .
-'''
-                sh label: '', script: '''docker image ls -a
-'''
-                sh label: '', script: '''cd ..
-'''
-            }
+            } 
         }
     }
 }
