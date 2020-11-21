@@ -21,7 +21,7 @@ pipeline {
         }
         stage('Start test app') {
             steps {
-                sh label: '', script: '''docker-compose up -d 
+                sh label: '', script: '''docker-compose up -d --verbose
 '''
             }
             post {
