@@ -21,7 +21,7 @@ pipeline {
         }
         stage('Start test app') {
             steps {
-                sh label: '', script: '''docker-compose up -d --verbose
+                sh label: '', script: '''docker-compose up -d --timeout=120
 '''
             }
             post {
