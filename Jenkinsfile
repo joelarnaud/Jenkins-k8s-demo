@@ -7,7 +7,7 @@ pipeline {
                 echo "$GIT_BRANCH"
             }
         }
-        stage('Docker Build') {
+        stage('Docker in Build') {
             steps{
                 sh label: '', script: '''docker image ls -a
 '''
