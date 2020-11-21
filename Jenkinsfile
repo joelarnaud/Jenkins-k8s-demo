@@ -45,18 +45,5 @@ pipeline {
 '''
             }
         }
-        stage('Push container') {
-            steps {
-                echo "Workspace is $WORKSPACE"
-                dir("$WORKSPACE/azure-vote") {
-                    script {
-                        docker.WithRegistry('https://index.docker.io/v1/', 'Jenkins') {
-                            def image = docker.build('joelarnaud/jenkins-course.latest')
-                            image.push()
-                        }
-                    }
-                }
-            }
-        }
     }
 }
