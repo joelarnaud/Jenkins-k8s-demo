@@ -1,6 +1,10 @@
 pipeline {
     agent any 
 
+    environment {
+        PATH = "$PATH:/usr/local/bin"
+    }
+
     stages {
         stage('Verify Branch') {
             steps {
@@ -17,7 +21,7 @@ pipeline {
         }
         stage('Start test app') {
             steps {
-                sh label: '', script: '''docker-compose up -d ./scripts/test_container.ps1
+                sh label: '', script: '''docker-compose up -d ./test_container.ps1
 '''
             }
             post {
@@ -39,6 +43,19 @@ pipeline {
             steps {
                 sh label: '', script: '''docker-compose down
 '''
+            }
+        }
+        stage('Push container') {
+            steps {
+                echo "Workspace is $WORKSPACE"
+                dir("$WORKSPACE/azure-vote") {
+                    script {
+                        docker.WithRegistry('https://index.docker.io/v1/', 'Jenkins') {
+                            def image = docker.build('joelarnaud/jenkins-course.latest')
+                            image.push()
+                        }
+                    }
+                }
             }
         }
     }
